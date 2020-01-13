@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Video Chat</title>
+</head>
+
+<body>
+    <h1>Video Chat</h1>
+
+    <button id="join-button">Join</button>
+    <video id="local-video"></video>
+    <div id="remote-videos"></div>
+
+    <script src="{{ url_for('static', filename='client.js') }}"></script>
+</body>
+
+</html>
