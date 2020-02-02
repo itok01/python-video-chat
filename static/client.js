@@ -15,7 +15,13 @@ const remoteVideos = document.getElementById('remote-videos');
 function addRemoteVideo(user) {
     let remoteVideo = document.createElement('img');
     remoteVideo.id = user + '-video';
+    remoteVideo.classList.add('aesthetic-effect-crt');
     remoteVideos.appendChild(remoteVideo);
+}
+
+function removeRemoteVideo(user) {
+    let remoteVideo = document.getElementById(rcvMessage.user + '-video');
+    remoteVideo.remove();
 }
 
 let ws = new WebSocket('wss://' + location.host + '/ws')
@@ -24,13 +30,13 @@ ws.onmessage = function (e) {
     rcvMessage = JSON.parse(e.data);
 
     if (rcvMessage.type == 'userlist') {
-        console.log(rcvMessage.userlist);
         for (let user of rcvMessage.userlist) {
-            console.log(user);
             addRemoteVideo(user);
         }
     } else if (rcvMessage.type == 'join') {
         addRemoteVideo(rcvMessage.user);
+    } else if (rcvMessage.type == 'leave') {
+        removeRemoteVideo(rcvMessage.user);
     } else if (rcvMessage.type == 'frame') {
         let remoteVideo = document.getElementById(rcvMessage.user + '-video');
         remoteVideo.src = rcvMessage.frame;
@@ -59,20 +65,22 @@ function join() {
         });
 
     let videoFrame = document.createElement('canvas');
-    console.log(video.clientWidth);
-    console.log(video.clientHeight);
-    videoFrame.width = video.clientWidth;
-    videoFrame.height = video.clientHeight;
     let ctx = videoFrame.getContext('2d');
+
+    remoteVideos.appendChild(videoFrame);
 
     let frameMessage = new Message('frame');
 
+
     video.addEventListener("timeupdate", () => {
-        ctx.drawImage(video, 0, 0, video.clientWidth, video.clientHeight);
+        if (ws.readyState == ws.CLOSED || ws.readyState == ws.CLOSING) {
+            location.href = location.origin + "/error";
+        }
+
+        ctx.drawImage(video, 0, 0, videoFrame.width, videoFrame.height);
         frameMessage.frame = videoFrame.toDataURL("image/webp");
         ws.send(JSON.stringify(frameMessage));
     });
 }
 
-document.getElementById('join-button').addEventListener('click', join);
-
+ws.onopen = join;

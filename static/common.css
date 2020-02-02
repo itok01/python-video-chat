@@ -1,0 +1,48 @@
+* {
+    font-family: sans-serif;
+}
+
+body {
+    position: relative;
+    height: 100vh;
+    background: url("image/background.jpg") center bottom;
+    background-size: cover;
+}
+
+h1 {
+    font-size: 4em;
+    color: #6EFCBB;
+    font-weight: bold;
+    text-shadow: 4px 4px 0px #4AB18E;
+    text-align: center;
+}
+
+.left-image {
+    float: left;
+}
+
+.center {
+    text-align: center;
+    margin: 0 auto;
+}
+
+.green-black {
+    font-size: 2em;
+    font-weight: bold;
+    color: #000;
+    background-color: #03EDAE;
+    display: inline-block;
+    padding: 0.5em;
+}
+
+#room-form {
+    font-size: 2em;
+}
+
+.form-title {
+    margin-bottom: 0;
+}
+
+.room-text, .join-room {
+    display: inline-block;
+}
