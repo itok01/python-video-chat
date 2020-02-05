@@ -49,7 +49,7 @@ const constraints = {
 }
 
 function join() {
-    let video = document.getElementById('local-video');
+    let video = document.createElement('video');
 
     ws.send(JSON.stringify(new Message('join')));
 

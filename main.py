@@ -1,6 +1,9 @@
+import base64
 from collections import defaultdict
+import datetime
 import json
 import sys
+import os
 
 from flask import Flask, render_template
 from flask_sockets import Sockets
@@ -76,6 +79,16 @@ def ws_service(ws):
                 broadcastRoom(data.get('user'), data.get(
                     'room'), frame_message)
 
+                # ログに記録
+                logUserImgPath = './log/' + str(data.get('user'))
+                if not os.path.isdir(logUserImgPath):
+                    os.mkdir(logUserImgPath)
+                logImgPath = logUserImgPath + '/' + \
+                    datetime.datetime.now().strftime('%Y%m%d%H%M%S%f.webp')
+                with open(logImgPath, 'wb') as f:
+                    imgData = data.get('frame').split(',')[1]
+                    f.write(base64.b64decode(imgData))
+
     except:
         print(sys.exc_info())
 
@@ -114,6 +127,9 @@ def closeConn(close_conn):
 
 
 if __name__ == '__main__':
+    if not os.path.isdir('./log'):
+        os.mkdir('./log')
+
     from gevent import pywsgi
     from geventwebsocket.handler import WebSocketHandler
     server = pywsgi.WSGIServer(('0.0.0.0', 443), app, handler_class=WebSocketHandler,
